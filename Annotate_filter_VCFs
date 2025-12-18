@@ -1,0 +1,20 @@
+##Annotate the VCF file using snpEff
+
+java -Xmx4g -jar snpEff.jar reindeer_masked ./Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing.recode.vcf.gz > ./Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_annotated.vcf
+
+##Pull out only synonymous sites using SNPsift
+
+cat Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_annotated.vcf | \
+java -Xmx4g -jar SnpSift.jar filter "( EFF[*].EFFECT = 'synonymous_variant' )" | \
+grep -v "WARNING" > Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_Syn.vcf
+
+##Pull out only non-synonymous sites using SNPsift
+
+cat Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_annotated.vcf | \
+java -Xmx4g -jar SnpSift.jar filter "( EFF[*].EFFECT = 'missense_variant' )" | \
+grep -v "WARNING" > Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_nonSyn.vcf
+
+#Filter files for only biallelic sites using VCFtools
+
+vcftools --gzvcf Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_Syn.vcf.gz --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_Syn_biallelic
+vcftools --gzvcf Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_nonSyn.vcf.gz --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_nonSyn_biallelic
