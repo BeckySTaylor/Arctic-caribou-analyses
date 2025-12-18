@@ -1,0 +1,31 @@
+##Open up the DoS results in excel and extract top and bottom 10th percentile
+
+#For getting the 10th percentile score so anything below this is in the bottom 10% 
+=PERCENTILE.INC(datarange,0.1) 
+
+#For getting the 90th percentile score so anything above this is in the top 10%
+=PERCENTILE.INC(datarange,0.9)
+
+#From these, extract the gene names and then pull those sites out of the VCF files for genetic diversity calculations, for example here for the genes in the bottom 10% for Baffin Island:
+
+#Firstly, extract the gene co-ordinates out of the gff annotation
+grep -w -f Baffin_bottom10_list.txt annotation.gff > Baffin_bottom10.gff
+grep -E $'\tmRNA\t' Baffin_bottom10.gff > Baffin_RG_bottom10_genes.gff
+cut -f 1,4,5 Baffin_bottom10_genes.gff > Baffin_bottom10_genes_coordinates.bed
+
+#Then run vcftools to make a vcf with snps only in those regions for both the synonymous and the nonsynonymous VCF files:
+vcftools --gzvcf ../Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_Syn_biallelic.recode.vcf.gz --bed Baffin_bottom10_genes_coordinates.bed --recode --recode-INFO-all --out Baffin_bottom10_NALout_5Missing_Syn
+vcftools --gzvcf ../Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_nonSyn_biallelic.recode.vcf.gz --bed Baffin_bottom10_genes_coordinates.bed --recode --recode-INFO-all --out Baffin_bottom10_NALout_5Missing_nonSyn
+
+#Calculate pi:
+vcftools --vcf Baffin_bottom10_NALout_5missing_Syn.recode.vcf --keep ../Baffin.txt --site-pi --out Baffin_bottom10_NALout_5missing_pi_Syn
+vcftools --vcf Baffin_bottom10_NALout_5missing_nonSyn.recode.vcf --keep ../Baffin.txt --site-pi --out Baffin_bottom10_NALout_5missing_pi_nonSyn
+
+#Find the average pi for the population:
+awk 'NR > 1 {sum+=$3} END {print sum / (NR - 1)}' Baffin_bottom10_NALout_5missing_pi_Syn
+awk 'NR > 1 {sum+=$3} END {print sum / (NR - 1)}' Baffin_bottom10_NALout_5missing_pi_nonSyn
+
+#Calculate numbe of sites which are homozygous, which can then be used to find which proportion of sites are heterozygous for each individual:
+vcftools --vcf Baffin_bottom10_NALout_5missing_Syn.recode.vcf --het --out Baffin_bottom10_NALout_5missing_het_Syn
+vcftools --vcf Baffin_bottom10_NALout_5missing_nonSyn.recode.vcf --het --out Baffin_bottom10_NALout_5missing_het_nonSyn
+
