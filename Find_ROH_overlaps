@@ -1,0 +1,14 @@
+##Extract genes that overlap with ROHs
+
+#First, take output from Plink and make one file for each individual, for example here for caribou 23507
+awk '$1 == "23507"' Apr2025_91indv_autosomes_3het.hom > Baffin_23507_ROH.hom
+
+#Then make those files into bed files with the co-ordinates of ROHs
+for FILE in *_ROH.hom; do awk '{print $4, $7, $8}' $FILE > ${FILE}.bed; done
+sed -i 's/ /\t/g' *.bed
+
+#Used the bed files for the genes in the top 10%, bottom 10% etc from before, and calcuate how many overlap with ROHs. Here as an example for those in the bottom 10% for Baffin Island
+for FILE in *_ROH.hom.bed; do bedtools intersect -a $FILE -b Baffin_5missing_bottom10_genes_coordinates.bed > ${FILE}_bottom10_5missing_genes.bed; done
+
+#This will output a list of the overlaps between the ROHs and the genes. Count how many there are to work out a proportion out of all genes in the list:
+for FILE in *genes.bed; do wc -l $FILE > ${FILE}_lc.txt; done
