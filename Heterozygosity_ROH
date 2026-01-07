@@ -1,0 +1,25 @@
+#To use mlRho for estimating individual heterozygosity, firstly use SAMtools mpileup
+
+for file in *.bam; do
+samtools view -b $file | samtools mpileup -q 30 -Q 30 -d 80 - | cut -f 2,5 | awk -f bam2pro.awk > ${file}_mpileup.txt
+done
+
+#Then use FormatPro (whish is downloaded alongside mlRho)
+
+for file in *_mpileup.txt; do
+~/FormatPro_0.5/formatPro -n ${file}_profileDb $file
+Done
+
+#And now use mlRho to get heterozygosity estimate for each individual
+
+mlRho -n PCID_NoDupsRG_reindeer.bam_mpileup.txt_profileDb -M 0 -I > PCID_mlRho_out.txt
+
+#To run ROH analysis using Plink from the VCF file, firstly for all ROHs over 100KB:
+
+plink --vcf Apr2025_91indv_Arctic_autosomes_X_Y_Reindeer_filter2.recode.vcf.gz --homozyg --homozyg-snp 100 --homozyg-kb 100 --homozyg-density 20 --homozyg-gap 1000 \
+ --homozyg-window-snp 100 --homozyg-window-het 1 --homozyg-window-missing 5 --homozyg-window-threshold 0.05 --homozyg-het 3 --not-chr OX460343.1,OX460344.1 --out Apr2025_91indv_autosomes_3het --allow-extra-chr
+
+#And then only including ROHs over 1MB:
+
+plink --vcf Apr2025_91indv_Arctic_autosomes_X_Y_Reindeer_filter2.recode.vcf.gz --homozyg --homozyg-snp 100 --homozyg-kb 1000 --homozyg-density 20 --homozyg-gap 1000 \
+ --homozyg-window-snp 100 --homozyg-window-het 1 --homozyg-window-missing 5 --homozyg-window-threshold 0.05 --homozyg-het 3 --not-chr OX460343.1,OX460344.1 --out Apr2025_91indv_autosomes_3het_1MB --allow-extra-chr
