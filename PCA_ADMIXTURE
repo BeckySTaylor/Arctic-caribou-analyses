@@ -1,0 +1,3 @@
+#First create BED file from the VCF
+
+plink --vcf Apr2025_91indv_Arctic_autosomes_X_Y_Reindeer_filter2.recode.vcf.gz --keep BRG_Baff_PRY_DU_GNL.txt --make-bed --out Apr2025_84indv_Arctic_autosomes_X_Y_Reindeer_NoMiss --allow-extra-chr
