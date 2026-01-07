@@ -1,0 +1,89 @@
+##Dsuite
+#Calculate D statisics from the VCF file:
+
+Dsuite Dtrios -n Arctic_NALout Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_filter2.recode.vcf.gz ./Arctic_SETS_Nalout.txt
+
+##GONE
+#Thin the VCF file and create population specific Plink format files for input into GONE. Here for Dolphin Union caribou:
+
+vcftools --gzvcf Apr2025_91indv_Arctic_autosomes_X_Y_Reindeer_filter2.recode.vcf.gz \
+--chr OX459937.2 \
+--chr OX459938.2 \
+--chr OX459939.2 \
+--chr OX459940.2 \
+--chr OX459941.2 \
+--chr OX459942.2 \
+--chr OX459943.2 \
+--chr OX459944.2 \
+--chr OX459945.2 \
+--chr OX459946.2 \
+--chr OX459947.2 \
+--chr OX459948.2 \
+--chr OX459949.2 \
+--chr OX459950.2 \
+--chr OX459951.2 \
+--chr OX459952.2 \
+--chr OX459953.2 \
+--chr OX459954.2 \
+--chr OX459955.2 \
+--chr OX459956.2 \
+--chr OX459957.2 \
+--chr OX459958.2 \
+--chr OX459959.2 \
+--chr OX459960.2 \
+--chr OX459961.2 \
+--chr OX459962.2 \
+--chr OX459963.2 \
+--chr OX459964.2 \
+--chr OX459965.2 \
+--chr OX459966.2 \
+--chr OX459967.2 \
+--chr OX459968.2 \
+--chr OX459969.2 \
+--chr OX460345.1 \
+--indv 58712 --indv 58713 --indv 58715 --indv 58719 --indv 58721 --indv 58722 --indv 58723 --indv 58725 --indv 58726 --indv 58727 \
+--min-alleles 2 --max-alleles 2 --thin 1000 --out DU_10_autosomes_biallelic_thinned_1000 --plink
+
+#Input map file needs re-formatting. Needs to be a column with just chromosome number, then SNP name (e.g. SNP1, SNP2 etc), third column all zeros as we dont know genetic location in centimorgans, and then position.
+#Need to edit the first column to have chromsome number.
+#Make a file with just the second column which contains the chromosome information
+
+awk '{print $2}' DU_10_autosomes_biallelic_thinned_1000.map > DU_10_autosomes_biallelic_thinned_1000_GONE_chromosomes_only
+
+#Remove everything after the colon:
+
+sed -i 's/\:.*//' DU_10_autosomes_biallelic_thinned_1000_GONE_chromosomes_only
+ 
+#So now have list of chromsomes. Need to change them to just the number so for each chromosome do a replace in the file
+ 
+sed -i 's/\OX459937.2/1/' DU_10_autosomes_biallelic_thinned_1000_chromosomes_only
+sed -i 's/\OX459938.2/2/' DU_10_autosomes_biallelic_thinned_1000_chromosomes_only
+etc
+ 
+#Now need to remove the first column of the map file and add this instead 
+ 
+awk '{print $2, $3, $4}' DU_10_autosomes_biallelic_thinned_1000.map > DU_10_autosomes_biallelic_thinned_1000_new.map
+  
+paste -d' ' DU_10_autosomes_biallelic_thinned_1000_GONE_chromosomes_only DU_10_autosomes_biallelic_thinned_1000_new.map > DU_10_autosomes_biallelic_thinned_1000_new2.map
+
+#Rename unedited map file and this new one:
+
+mv ./DU_10_autosomes_biallelic_thinned_1000.map ./DU_10_autosomes_biallelic_thinned_1000_Unedited.map
+
+mv ./DU_10_autosomes_biallelic_thinned_1000_new2.map ./DU_10_autosomes_biallelic_thinned_1000.map
+
+#Now have final map file.
+
+#The ped file also needs editing, the column before the genotypes must be all -9, this will make column 6 all -9
+
+awk '{$6=-9 ; print ;}' DU_10_autosomes_biallelic_thinned_1000.ped > DU_10_autosomes_biallelic_thinned_1000_edit.ped
+
+#Rename unedited ped file and this new one:
+
+mv ./DU_10_autosomes_biallelic_thinned_1000.ped ./DU_10_autosomes_biallelic_thinned_1000_unedited.ped
+
+mv ./DU_10_autosomes_biallelic_thinned_1000_edit.ped ./DU_10_autosomes_biallelic_thinned_1000.ped
+
+#Then can run GONE, input parameters file used included as a separate file:
+
+bash script_GONE.sh DU_10_autosomes_biallelic_thinned_1000
