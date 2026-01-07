@@ -6,7 +6,7 @@ Whole genome analyses of Arctic caribou, including demographic history and funct
 2. Heterozygosity_ROH
 
 -Demographic history
-1. 
+1. Demographic_history and GONE_INPUT_PARAMETERS_FILE
 
 -Functional variation DoS statistic investigations
 1. Annotate_filter_VCFs
