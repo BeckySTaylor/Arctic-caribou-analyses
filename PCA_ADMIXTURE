@@ -1,3 +1,17 @@
 #First create BED file from the VCF
-
 plink --vcf Apr2025_91indv_Arctic_autosomes_X_Y_Reindeer_filter2.recode.vcf.gz --keep BRG_Baff_PRY_DU_GNL.txt --make-bed --out Apr2025_84indv_Arctic_autosomes_X_Y_Reindeer_NoMiss --allow-extra-chr
+
+#Run the PCA with all Arctic individuals
+plink --bfile Apr2025_84indv_Arctic_autosomes_X_Y_Reindeer_NoMiss --pca --out Apr2025_84_Arctic_autosomes_X_Y_NoMiss_PCA --allow-extra-chr
+
+#Run with Baffin Island caribou alone
+plink --bfile Apr2025_84indv_Arctic_autosomes_X_Y_Reindeer_NoMiss --pca --keep Baffin.txt --out Apr2025_Baffin_2Corn_autosomes_X_Y_NoMiss_PCA --allow-extra-chr
+
+#Run with mainland barren-ground, Peary, and Dolphin Union caribou
+plink --bfile Apr2025_84indv_Arctic_autosomes_X_Y_Reindeer_NoMiss --pca --keep BRG_PRY_DU.txt --out Apr2025_BRG_PRY_DU_autosomes_X_Y_NoMiss_PCA --allow-extra-chr
+
+#Run ADMIXTURE
+for K in 1 2 3 4 5 6; \
+ do admixture --cv Apr2025_82indv_Arctic_autosomes_X_Y_Reindeer_NoMiss.bed $K -j10 | tee log${K}.out; done
+
+
