@@ -7,6 +7,7 @@ Whole genome analyses of Arctic caribou, including demographic history and funct
 
 -Demographic history
 1. Demographic_history and GONE_INPUT_PARAMETERS_FILE
+2. PSMC_Beta-PSMC
 
 -Functional variation DoS statistic investigations
 1. Annotate_filter_VCFs
