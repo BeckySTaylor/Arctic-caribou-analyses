@@ -22,6 +22,6 @@ psmc -t 5 -p "1+1+1+1+25*2+4+6" -o 21332_NoDupsRG_reindeer_q30_15X_mod_1s.psmc 2
 
 beta-psmc -t 5 -p 20*1 -o 21332_NoDupsRG_reindeer_q30_15X_Beta.psmc 21332_NoDupsRG_reindeer_q30_15X.psmcfa
 
-#Plot each using a mutation rate of 1.1e-08 and a generation time of 8 years
+#Create the file for plotting in R for each using a mutation rate of 1.1e-08 and a generation time of 8 years
 
 psmc/utils/psmc_plot.pl -u 1.1e-08 -g 8 -R -p 21332_q30_15X_default_plot 21332_NoDupsRG_reindeer_q30_15X.psmc
