@@ -1,0 +1,27 @@
+#Firstly filter BAM files for mapping quality, and then calculte the depth, here for caribou 21332
+
+samtools view -b -q 30 -o 21332_NoDupsRG_reindeer_q30.bam 21332_NoDupsRG_reindeer.bam
+samtools depth -a -o 21332_q30.coverage 21332_NoDupsRG_reindeer_q30.bam
+awk '{sum += $3} END {print "Average = ", sum/NR}' 21332_q30.coverage > 21332_q30.Average
+
+#Subsample the BAM files to 15X given the depth calculated above
+
+samtools view -s 0.515368282 -b -o 21332_NoDupsRG_reindeer_q30_15X.bam 21332_NoDupsRG_reindeer_q30.bam
+
+#Make the input fastq file for PSMC and Beta-PSMC
+
+bcftools mpileup -C50 -f reindeer_masked.fna 21332_NoDupsRG_reindeer_q30_15X.bam | bcftools call -c | vcfutils.pl vcf2fq -d 7 -D 30 > 21332_NoDupsRG_reindeer_q30_15X.fq
+
+#Run PSMC using the three different parameter combinations
+
+psmc -t 5 -p "4+25*2+4+6" -o 21332_NoDupsRG_reindeer_q30_15X.psmc 21332_NoDupsRG_reindeer_q30_15X.psmcfa
+psmc -t 5 -p "2+2+25*2+4+6" -o 21332_NoDupsRG_reindeer_q30_15X_mod2_2.psmc 21332_NoDupsRG_reindeer_q30_15X.psmcfa
+psmc -t 5 -p "1+1+1+1+25*2+4+6" -o 21332_NoDupsRG_reindeer_q30_15X_mod_1s.psmc 21332_NoDupsRG_reindeer_q30_15X.psmcfa
+
+#Run Beta-PSMC
+
+beta-psmc -t 5 -p 20*1 -o 21332_NoDupsRG_reindeer_q30_15X_Beta.psmc 21332_NoDupsRG_reindeer_q30_15X.psmcfa
+
+#Plot each using a mutation rate of 1.1e-08 and a generation time of 8 years
+
+psmc/utils/psmc_plot.pl -u 1.1e-08 -g 8 -R -p 21332_q30_15X_default_plot 21332_NoDupsRG_reindeer_q30_15X.psmc
