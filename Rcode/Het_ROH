@@ -24,7 +24,7 @@ Ordered_ARC$DU <- factor(Ordered_ARC$DU, levels = c("Baffin Island","Barren-grou
 
 p2 <- ggplot(Ordered_ARC, aes(x=DU, y=FROH, fill=DU)) + scale_fill_manual(values=c("#1F78B4","#B2DF8A","#33A02C","#FB9A99","#E31A1C","#FDBF6F"))+ theme_classic()+ theme(legend.position="none", axis.text=element_text(size=12),axis.title=element_text(size=16))+ 
   xlab("Population") +
-  ylab("Heterozygosity")+
+  ylab("FROH 100KB")+
   geom_boxplot()
 
 
@@ -38,7 +38,7 @@ Ordered_ARC_1MB$DU <- factor(Ordered_ARC_1MB$DU, levels = c("Baffin Island","Bar
 
 p3 <- ggplot(Ordered_ARC_1MB, aes(x=DU, y=FROH, fill=DU)) + scale_fill_manual(values=c("#1F78B4","#B2DF8A","#33A02C","#FB9A99","#E31A1C","#FDBF6F"))+ theme_classic()+ theme(legend.position="none", axis.text=element_text(size=12),axis.title=element_text(size=16))+ 
   xlab("Population") +
-  ylab("FROH")+
+  ylab("FROH 1MB")+
   geom_boxplot()
 
 ROH_Het <- ((p1|p2/p3))+
