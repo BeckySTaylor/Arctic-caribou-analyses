@@ -1,0 +1,52 @@
+library("ggplot2")
+library(patchwork)
+
+Het_results <- read.csv(file="mlRho_82_NoGNL_15X_6_BRG_PRY.csv")
+Het_results$PCID <- as.factor(Het_results$PCID)
+
+#Re-order the bars and legend manually
+Ordered_Het <- Het_results
+Ordered_Het$DU <- factor(Ordered_Het$DU, levels = c("Baffin Island","Barren-ground","Dolphin Union","Boothia","Banks Island","Other Peary"))
+
+p1 <- ggplot(Ordered_Het, aes(x=DU, y=Heterozygosity, fill=DU)) + scale_fill_manual(values=c("#1F78B4","#B2DF8A","#33A02C","#FB9A99","#E31A1C","#FDBF6F"))+ theme_classic()+ theme(legend.position="none", axis.text=element_text(size=12),axis.title=element_text(size=16))+ 
+  xlab("Population") +
+  ylab("Heterozygosity")+
+  geom_boxplot()
+
+
+#ROH No greenland
+ROH_results <- read.csv(file="Plink_ROH_82_100kb_NoGNL.csv")
+ROH_results$PCID <- as.factor(ROH_results$PCID)
+
+#Re-order the bars and legend manually
+Ordered_ARC <- ROH_results
+Ordered_ARC$DU <- factor(Ordered_ARC$DU, levels = c("Baffin Island","Barren-ground","Dolphin Union","Boothia","Banks Island","Other Peary"))
+
+p2 <- ggplot(Ordered_ARC, aes(x=DU, y=FROH, fill=DU)) + scale_fill_manual(values=c("#1F78B4","#B2DF8A","#33A02C","#FB9A99","#E31A1C","#FDBF6F"))+ theme_classic()+ theme(legend.position="none", axis.text=element_text(size=12),axis.title=element_text(size=16))+ 
+  xlab("Population") +
+  ylab("Heterozygosity")+
+  geom_boxplot()
+
+
+#1MB
+ROH_results_1MB <- read.csv(file="Plink_ROH_84_1MB_NoGNL.csv")
+ROH_results_1MB$PCID <- as.factor(ROH_results_1MB$PCID)
+
+#Re-order the bars and legend manually
+Ordered_ARC_1MB <- ROH_results_1MB
+Ordered_ARC_1MB$DU <- factor(Ordered_ARC_1MB$DU, levels = c("Baffin Island","Barren-ground","Dolphin Union","Boothia","Banks Island","Other Peary"))
+
+p3 <- ggplot(Ordered_ARC_1MB, aes(x=DU, y=FROH, fill=DU)) + scale_fill_manual(values=c("#1F78B4","#B2DF8A","#33A02C","#FB9A99","#E31A1C","#FDBF6F"))+ theme_classic()+ theme(legend.position="none", axis.text=element_text(size=12),axis.title=element_text(size=16))+ 
+  xlab("Population") +
+  ylab("FROH")+
+  geom_boxplot()
+
+ROH_Het <- ((p1|p2/p3))+
+  plot_annotation(tag_levels = 'A') #add figure labels
+
+#Save as PDF
+pdf("Figure2_Het_ROH_boxplot.pdf", height=10, width=20)
+ROH_Het
+dev.off()
+
+
