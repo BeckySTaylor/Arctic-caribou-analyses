@@ -1,0 +1,206 @@
+###ROH overlaps short ROHs
+
+Proprtion_ROH <- read.csv(file="ROH_Overlaps_5missing.csv")
+Ordered_Proprtion_ROH <- Proprtion_ROH
+Ordered_Proprtion_ROH$Population <- factor(Ordered_Proprtion_ROH$Population, levels = c("Baffin","Barren-ground","Dolphin Union","Banks","Other Peary"))
+
+model1 <- lm(Proportion_total_DoS_genes ~ FROH, data = Ordered_Proprtion_ROH)
+r_squared1 <- summary(model1)$r.squared
+p_value1 <- summary(model1)$coefficients[2, 4]  # p-value for the slope
+
+p1 <- ggplot(Ordered_Proprtion_ROH, aes(x=FROH, y=Proportion_total_DoS_genes)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  geom_abline (slope=1, linetype = "dashed", color="black")+
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared1, 3), "; p = ", 
+                          ifelse(p_value1 < 0.001, "< 0.001", round(p_value1, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("FROH") +
+  ylab("Proportion genes with DoS score of 0 in ROH")
+
+model2 <- lm(Proportion_total_all_genes ~ FROH, data = Ordered_Proprtion_ROH)
+r_squared2 <- summary(model2)$r.squared
+p_value2 <- summary(model2)$coefficients[2, 4]  # p-value for the slope
+
+p2 <- ggplot(Ordered_Proprtion_ROH, aes(x=FROH, y=Proportion_total_all_genes)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  geom_abline (slope=1, linetype = "dashed", color="black")+
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared2, 3), "; p = ", 
+                          ifelse(p_value2 < 0.001, "< 0.001", round(p_value2, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("FROH") +
+  ylab("Proportion all genes in ROH")
+
+model3 <- lm(Proportion_total_top_10_genes ~ FROH, data = Ordered_Proprtion_ROH)
+r_squared3 <- summary(model3)$r.squared
+p_value3 <- summary(model3)$coefficients[2, 4]  # p-value for the slope
+
+p3 <- ggplot(Ordered_Proprtion_ROH, aes(x=FROH, y=Proportion_total_top_10_genes)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  geom_abline (slope=1, linetype = "dashed", color="black")+
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared3, 3), "; p = ", 
+                          ifelse(p_value3 < 0.001, "< 0.001", round(p_value3, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("FROH") +
+  ylab("Proportion genes in top 10% in ROH")
+
+model4 <- lm(Proportion_total_bottom_10_genes ~ FROH, data = Ordered_Proprtion_ROH)
+r_squared4 <- summary(model4)$r.squared
+p_value4 <- summary(model4)$coefficients[2, 4]  # p-value for the slope
+
+p4 <- ggplot(Ordered_Proprtion_ROH, aes(x=FROH, y=Proportion_total_bottom_10_genes)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  geom_abline (slope=1, linetype = "dashed", color="black")+
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared4, 3), "; p = ", 
+                          ifelse(p_value4 < 0.001, "< 0.001", round(p_value4, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("FROH") +
+  ylab("Proportion genes in bottom 10% in ROH")
+
+
+###ROH overlaps long ROHs
+
+Proprtion_ROH <- read.csv(file="ROH_Overlaps_5missing_1MB.csv")
+Ordered_Proprtion_ROH <- Proprtion_ROH
+Ordered_Proprtion_ROH$Population <- factor(Ordered_Proprtion_ROH$Population, levels = c("Baffin","Barren-ground","Dolphin Union","Banks","Other Peary"))
+
+model1 <- lm(Proportion_total_DoS_genes ~ FROH, data = Ordered_Proprtion_ROH)
+r_squared1 <- summary(model1)$r.squared
+p_value1 <- summary(model1)$coefficients[2, 4]  # p-value for the slope
+
+p5 <- ggplot(Ordered_Proprtion_ROH, aes(x=FROH, y=Proportion_total_DoS_genes)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  geom_abline (slope=1, linetype = "dashed", color="black")+
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared1, 3), "; p = ", 
+                          ifelse(p_value1 < 0.001, "< 0.001", round(p_value1, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("FROH") +
+  ylab("Proportion genes with DoS score of 0 in long ROH")
+
+model2 <- lm(Proportion_total_all_genes ~ FROH, data = Ordered_Proprtion_ROH)
+r_squared2 <- summary(model2)$r.squared
+p_value2 <- summary(model2)$coefficients[2, 4]  # p-value for the slope
+
+p6 <- ggplot(Ordered_Proprtion_ROH, aes(x=FROH, y=Proportion_total_all_genes)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  geom_abline (slope=1, linetype = "dashed", color="black")+
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared2, 3), "; p = ", 
+                          ifelse(p_value2 < 0.001, "< 0.001", round(p_value2, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("FROH") +
+  ylab("Proportion all genes in long ROH")
+
+model3 <- lm(Proportion_total_top_10_genes ~ FROH, data = Ordered_Proprtion_ROH)
+r_squared3 <- summary(model3)$r.squared
+p_value3 <- summary(model3)$coefficients[2, 4]  # p-value for the slope
+
+p7 <- ggplot(Ordered_Proprtion_ROH, aes(x=FROH, y=Proportion_total_top_10_genes)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  geom_abline (slope=1, linetype = "dashed", color="black")+
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared3, 3), "; p = ", 
+                          ifelse(p_value3 < 0.001, "< 0.001", round(p_value3, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("FROH") +
+  ylab("Proportion genes in top 10% in long ROH")
+
+model4 <- lm(Proportion_total_bottom_10_genes ~ FROH, data = Ordered_Proprtion_ROH)
+r_squared4 <- summary(model4)$r.squared
+p_value4 <- summary(model4)$coefficients[2, 4]  # p-value for the slope
+
+p8 <- ggplot(Ordered_Proprtion_ROH, aes(x=FROH, y=Proportion_total_bottom_10_genes)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  geom_abline (slope=1, linetype = "dashed", color="black")+
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared4, 3), "; p = ", 
+                          ifelse(p_value4 < 0.001, "< 0.001", round(p_value4, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("FROH") +
+  ylab("Proportion genes in bottom 10% in long ROH")
+
+
+ROH_genes_scatters <- ((p3|p4|p2|p1)/(p7|p8|p6|p5))+
+  plot_annotation(tag_levels = 'A') #add figure labels
+
+#Save as PDF
+pdf("Figure5_Proportion_ROHoverlaps_5missing_Rsq_abline.pdf", height=10, width=22)
+ROH_genes_scatters
+dev.off()
+
