@@ -1,0 +1,22 @@
+pca1 <- read.table("Apr2025_84_Arctic_autosomes_X_Y_NoMiss_PCA.eigenvec",sep=" ",header=F)
+library("ggplot2")
+
+
+Population <- c("Ellesmere Island","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Barren-ground","Baffin Island","Baffin Island",	"Queen Elizabeth Islands",	"Barren-ground",	"Barren-ground",	"Dolphin Union",	"Dolphin Union",	"Banks Island",	"Banks Island",	"Somerset Island",	"Bathurst Island",	"Bathurst Island",	"Baffin Island",	"Baffin Island",	"Bathurst Island",	"Bathurst Island",	"Banks Island",	"Banks Island",	"Banks Island",	"Banks Island",	"Prince of Wales Island",	"Banks Island",	"Banks Island",	"Banks Island",	"Banks Island",	"Boothia",	"Boothia",	"Greenland",	"Greenland",	"Baffin Island",	"Baffin Island",	"Baffin Island",	"Baffin Island",	"Baffin Island",	"Baffin Island",	"Baffin Island",	"Baffin Island",	"Baffin Island",	"Baffin Island",	"Barren-ground",	"Barren-ground",	"Ellesmere Island", 	"Ellesmere Island", "Baffin Island",	"Baffin Island",	"Barren-ground",	"Barren-ground",	"Barren-ground",	"Barren-ground",	"Barren-ground",	"Barren-ground",	"Barren-ground",	"Barren-ground",	"Barren-ground",	"Barren-ground",	"Dolphin Union",	"Dolphin Union",	"Dolphin Union",	"Dolphin Union",	"Dolphin Union",	"Dolphin Union",	"Dolphin Union",	"Dolphin Union",	"Dolphin Union",	"Dolphin Union",	"Baffin Island",	"Baffin Island",	"Ellesmere Island")
+desired_order <- c("Greenland", "Baffin Island", "Barren-ground", "Dolphin Union", 
+                   "Boothia", "Banks Island", "Bathurst Island", "Ellesmere Island", 
+                   "Prince of Wales Island", "Queen Elizabeth Islands", "Somerset Island")
+
+Population <- factor(Population, levels = desired_order)
+pca1$Population <- Population
+
+#Plot with colours by pop
+
+pdf("PCA_Arcitc_84_colours2.pdf", height=6, width=8)
+ggplot(data=pca1, aes(x=V3,y=V4,color=Population)) + geom_point(size=1)+
+  scale_color_manual(values=c("#A6CEE3","#1F78B4","#B2DF8A", "#33A02C","#FB9A99","#E31A1C","#FDBF6F","#FF7F00","#CAB2D6","#6A3D9A","#B15928"))+
+  theme(legend.title = element_text(size=14), legend.text = element_text(size=12),panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("PC1 (9.2% variation)") +
+  ylab("PC2 (7.8% variation)")
+dev.off()
