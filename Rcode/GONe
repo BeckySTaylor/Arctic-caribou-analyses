@@ -42,10 +42,10 @@ p1 <- ggplot(summary_stats, aes(x = Generation)) +
               fill = "lightblue", alpha = 0.3) +
   # Add mean line
   geom_line(aes(y = mean_value), 
-            color = "darkblue", size = 1.2) +
+            color = "darkblue", size = 0.5) +
   # Add points for means
   geom_point(aes(y = mean_value), 
-             color = "darkblue", size = 2) +
+             color = "darkblue", size = 1) +
   # Customize the plot
   labs(
     x = "Generation",
@@ -104,10 +104,10 @@ p2 <- ggplot(summary_stats, aes(x = Generation)) +
               fill = "lightblue", alpha = 0.3) +
   # Add mean line
   geom_line(aes(y = mean_value), 
-            color = "darkblue", size = 1.2) +
+            color = "darkblue", size = 0.5) +
   # Add points for means
   geom_point(aes(y = mean_value), 
-             color = "darkblue", size = 2) +
+             color = "darkblue", size = 1) +
   # Customize the plot
   labs(
     x = "Generation",
@@ -165,10 +165,10 @@ p3 <- ggplot(summary_stats, aes(x = Generation)) +
               fill = "lightblue", alpha = 0.3) +
   # Add mean line
   geom_line(aes(y = mean_value), 
-            color = "darkblue", size = 1.2) +
+            color = "darkblue", size = 0.5) +
   # Add points for means
   geom_point(aes(y = mean_value), 
-             color = "darkblue", size = 2) +
+             color = "darkblue", size = 1) +
   # Customize the plot
   labs(
     x = "Generation",
@@ -226,10 +226,10 @@ p4 <- ggplot(summary_stats, aes(x = Generation)) +
               fill = "lightblue", alpha = 0.3) +
   # Add mean line
   geom_line(aes(y = mean_value), 
-            color = "darkblue", size = 1.2) +
+            color = "darkblue", size = 0.5) +
   # Add points for means
   geom_point(aes(y = mean_value), 
-             color = "darkblue", size = 2) +
+             color = "darkblue", size = 1) +
   # Customize the plot
   labs(
     x = "Generation",
