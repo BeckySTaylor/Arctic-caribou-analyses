@@ -1,0 +1,257 @@
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(patchwork)
+
+# Read the data - Firstly for mainland-barren-ground
+data <- read.csv("Output_Ne_Barrenground_all_25_autosomes_thinned_values_merged_100gens_start4.csv")
+
+# Check the structure of the data
+head(data)
+str(data)
+
+# The data has Generation as the first column and multiple geometric mean values
+# Reshape the data for analysis
+
+# Convert to long format for easier manipulation
+data_long <- data %>%
+  pivot_longer(cols = -Generation, 
+               names_to = "Replicate", 
+               values_to = "Geometric_mean") %>%
+  mutate(Replicate = gsub("Geometric_mean\\.?", "", Replicate)) %>%  # Clean replicate names
+  mutate(Replicate = ifelse(Replicate == "", "1", Replicate))  # Handle first column
+
+# Calculate summary statistics for each generation
+summary_stats <- data_long %>%
+  group_by(Generation) %>%
+  summarise(
+    mean_value = mean(Geometric_mean, na.rm = TRUE),
+    sd_value = sd(Geometric_mean, na.rm = TRUE),
+    n = n(),
+    se = sd_value / sqrt(n),
+    # Calculate 95% confidence intervals
+    ci_lower = mean_value - 1.96 * se,
+    ci_upper = mean_value + 1.96 * se,
+    .groups = 'drop'
+  )
+
+# Create the plot
+p1 <- ggplot(summary_stats, aes(x = Generation)) +
+  # Add confidence interval shading
+  geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper), 
+              fill = "lightblue", alpha = 0.3) +
+  # Add mean line
+  geom_line(aes(y = mean_value), 
+            color = "darkblue", size = 1.2) +
+  # Add points for means
+  geom_point(aes(y = mean_value), 
+             color = "darkblue", size = 2) +
+  # Customize the plot
+  labs(
+    x = "Generation",
+    y = "Effective Population Size (Ne)",
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    axis.title = element_text(size = 11),
+    axis.text = element_text(size = 10),
+    plot.caption = element_text(size = 9, color = "gray60")
+  ) +
+  # Adjust y-axis to show the full range nicely
+  scale_y_continuous(labels = scales::comma_format()) +
+  scale_x_continuous(breaks = seq(0, 100, 5))
+
+
+
+# Now for Baffin Island
+data <- read.csv("Output_Ne_Baffin20s_7_autosomes_thinned_values_merged_100gens_start4.csv")
+
+# Check the structure of the data
+head(data)
+str(data)
+
+# The data has Generation as the first column and multiple geometric mean values
+# Reshape the data for analysis
+
+# Convert to long format for easier manipulation
+data_long <- data %>%
+  pivot_longer(cols = -Generation, 
+               names_to = "Replicate", 
+               values_to = "Geometric_mean") %>%
+  mutate(Replicate = gsub("Geometric_mean\\.?", "", Replicate)) %>%  # Clean replicate names
+  mutate(Replicate = ifelse(Replicate == "", "1", Replicate))  # Handle first column
+
+# Calculate summary statistics for each generation
+summary_stats <- data_long %>%
+  group_by(Generation) %>%
+  summarise(
+    mean_value = mean(Geometric_mean, na.rm = TRUE),
+    sd_value = sd(Geometric_mean, na.rm = TRUE),
+    n = n(),
+    se = sd_value / sqrt(n),
+    # Calculate 95% confidence intervals
+    ci_lower = mean_value - 1.96 * se,
+    ci_upper = mean_value + 1.96 * se,
+    .groups = 'drop'
+  )
+
+# Create the plot
+p2 <- ggplot(summary_stats, aes(x = Generation)) +
+  # Add confidence interval shading
+  geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper), 
+              fill = "lightblue", alpha = 0.3) +
+  # Add mean line
+  geom_line(aes(y = mean_value), 
+            color = "darkblue", size = 1.2) +
+  # Add points for means
+  geom_point(aes(y = mean_value), 
+             color = "darkblue", size = 2) +
+  # Customize the plot
+  labs(
+    x = "Generation",
+    y = "Effective Population Size (Ne)",
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    axis.title = element_text(size = 11),
+    axis.text = element_text(size = 10),
+    plot.caption = element_text(size = 9, color = "gray60")
+  ) +
+  # Adjust y-axis to show the full range nicely
+  scale_y_continuous(labels = scales::comma_format()) +
+  scale_x_continuous(breaks = seq(0, 100, 5))
+
+
+# Now for Dolphin Union
+data <- read.csv("Output_Ne_DU_10_autosomes_biallelic_thinned_1000_values_merged_100gens_start4.csv")
+
+# Check the structure of the data
+head(data)
+str(data)
+
+# The data has Generation as the first column and multiple geometric mean values
+# Reshape the data for analysis
+
+# Convert to long format for easier manipulation
+data_long <- data %>%
+  pivot_longer(cols = -Generation, 
+               names_to = "Replicate", 
+               values_to = "Geometric_mean") %>%
+  mutate(Replicate = gsub("Geometric_mean\\.?", "", Replicate)) %>%  # Clean replicate names
+  mutate(Replicate = ifelse(Replicate == "", "1", Replicate))  # Handle first column
+
+# Calculate summary statistics for each generation
+summary_stats <- data_long %>%
+  group_by(Generation) %>%
+  summarise(
+    mean_value = mean(Geometric_mean, na.rm = TRUE),
+    sd_value = sd(Geometric_mean, na.rm = TRUE),
+    n = n(),
+    se = sd_value / sqrt(n),
+    # Calculate 95% confidence intervals
+    ci_lower = mean_value - 1.96 * se,
+    ci_upper = mean_value + 1.96 * se,
+    .groups = 'drop'
+  )
+
+# Create the plot
+p3 <- ggplot(summary_stats, aes(x = Generation)) +
+  # Add confidence interval shading
+  geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper), 
+              fill = "lightblue", alpha = 0.3) +
+  # Add mean line
+  geom_line(aes(y = mean_value), 
+            color = "darkblue", size = 1.2) +
+  # Add points for means
+  geom_point(aes(y = mean_value), 
+             color = "darkblue", size = 2) +
+  # Customize the plot
+  labs(
+    x = "Generation",
+    y = "Effective Population Size (Ne)",
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    axis.title = element_text(size = 11),
+    axis.text = element_text(size = 10),
+    plot.caption = element_text(size = 9, color = "gray60")
+  ) +
+  # Adjust y-axis to show the full range nicely
+  scale_y_continuous(labels = scales::comma_format()) +
+  scale_x_continuous(breaks = seq(0, 100, 5))
+
+
+# Now for Banks Island
+data <- read.csv("Output_Ne_Banks_10_autosomes_thinned_1000_values_merged_100gens_start4.csv")
+
+# Check the structure of the data
+head(data)
+str(data)
+
+# The data has Generation as the first column and multiple geometric mean values
+# Reshape the data for analysis
+
+# Convert to long format for easier manipulation
+data_long <- data %>%
+  pivot_longer(cols = -Generation, 
+               names_to = "Replicate", 
+               values_to = "Geometric_mean") %>%
+  mutate(Replicate = gsub("Geometric_mean\\.?", "", Replicate)) %>%  # Clean replicate names
+  mutate(Replicate = ifelse(Replicate == "", "1", Replicate))  # Handle first column
+
+# Calculate summary statistics for each generation
+summary_stats <- data_long %>%
+  group_by(Generation) %>%
+  summarise(
+    mean_value = mean(Geometric_mean, na.rm = TRUE),
+    sd_value = sd(Geometric_mean, na.rm = TRUE),
+    n = n(),
+    se = sd_value / sqrt(n),
+    # Calculate 95% confidence intervals
+    ci_lower = mean_value - 1.96 * se,
+    ci_upper = mean_value + 1.96 * se,
+    .groups = 'drop'
+  )
+
+# Create the plot
+p4 <- ggplot(summary_stats, aes(x = Generation)) +
+  # Add confidence interval shading
+  geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper), 
+              fill = "lightblue", alpha = 0.3) +
+  # Add mean line
+  geom_line(aes(y = mean_value), 
+            color = "darkblue", size = 1.2) +
+  # Add points for means
+  geom_point(aes(y = mean_value), 
+             color = "darkblue", size = 2) +
+  # Customize the plot
+  labs(
+    x = "Generation",
+    y = "Effective Population Size (Ne)",
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    axis.title = element_text(size = 11),
+    axis.text = element_text(size = 10),
+    plot.caption = element_text(size = 9, color = "gray60")
+  ) +
+  # Adjust y-axis to show the full range nicely
+  scale_y_continuous(labels = scales::comma_format()) +
+  scale_x_continuous(breaks = seq(0, 100, 5))
+
+
+GONE <- ((p1|p2)/(p3|p4))+
+  plot_annotation(tag_levels = 'A') #add figure labels
+
+#Save as PDF
+pdf("Figure3_GONe.pdf", height=8, width=14)
+GONE
+dev.off()
