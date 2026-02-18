@@ -1,0 +1,254 @@
+library(ggplot2)
+library(patchwork)
+
+#First het all vs all synonymous and all non-synonymous sites
+
+Heterozygosity <- read.csv(file="All_96_Filter2_Biallelic_het_proportions_5missing_ReDo.csv")
+Ordered_Heterozygosity <- Heterozygosity
+Ordered_Heterozygosity$Population <- factor(Ordered_Heterozygosity$Population, levels = c("Baffin","Barren-ground","Dolphin Union","Banks","Other Peary"))
+
+# Calculate R² and p-value
+model1 <- lm(Het_Syn ~ Het_all, data = Ordered_Heterozygosity)
+r_squared1 <- summary(model1)$r.squared
+p_value1 <- summary(model1)$coefficients[2, 4]  # p-value for the slope
+
+p1 <- ggplot(Ordered_Heterozygosity, aes(x=Het_all, y=Het_Syn)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared1, 3), "; p = ", 
+                          ifelse(p_value1 < 0.001, "< 0.001", round(p_value1, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 5) +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("Proportion het all sites") +
+  ylab("Proportion het synonymous sites")
+
+model2 <- lm(Het_nonSyn ~ Het_all, data = Ordered_Heterozygosity)
+r_squared2 <- summary(model2)$r.squared
+p_value2 <- summary(model2)$coefficients[2, 4]  # p-value for the slope
+
+p2 <- ggplot(Ordered_Heterozygosity, aes(x=Het_all, y=Het_nonSyn)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared2, 3), "; p = ", 
+                          ifelse(p_value2 < 0.001, "< 0.001", round(p_value2, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 5) +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("Proportion het all sites") +
+  ylab("Proportion het non-synonymous sites")
+
+
+Het_scatters <- ((p1|p2))+
+  plot_annotation(tag_levels = 'A') #add figure labels
+
+#Save as PDF
+pdf("Proportion_het_scatter_plots_5missing_allSyn_allNonSyn_Rsq.pdf", height=6, width=16)
+Het_scatters
+dev.off()
+
+
+###Now for top 10%, bottom 10%, all sites, and those with a score of 0
+
+model3 <- lm(Het_top10_Syn ~ Het_all, data = Ordered_Heterozygosity)
+r_squared3 <- summary(model3)$r.squared
+p_value3 <- summary(model3)$coefficients[2, 4]  # p-value for the slope
+
+p3 <- ggplot(Ordered_Heterozygosity, aes(x=Het_all, y=Het_top10_Syn)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared3, 3), "; p = ", 
+                          ifelse(p_value3 < 0.001, "< 0.001", round(p_value3, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("Proportion het all sites") +
+  ylab("Proportion het top 10% synonymous")
+
+model4 <- lm(Het_top10_nonSyn ~ Het_all, data = Ordered_Heterozygosity)
+r_squared4 <- summary(model4)$r.squared
+p_value4 <- summary(model4)$coefficients[2, 4]  # p-value for the slope
+
+p4 <- ggplot(Ordered_Heterozygosity, aes(x=Het_all, y=Het_top10_nonSyn)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared4, 3), "; p = ", 
+                          ifelse(p_value4 < 0.001, "< 0.001", round(p_value4, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("Proportion het all sites") +
+  ylab("Proportion het top 10% non-synonymous")
+
+model5 <- lm(Het_Botton_10_Syn ~ Het_all, data = Ordered_Heterozygosity)
+r_squared5 <- summary(model5)$r.squared
+p_value5 <- summary(model5)$coefficients[2, 4]  # p-value for the slope
+
+p5 <- ggplot(Ordered_Heterozygosity, aes(x=Het_all, y=Het_Botton_10_Syn)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared5, 3), "; p = ", 
+                          ifelse(p_value5 < 0.001, "< 0.001", round(p_value5, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("Proportion het all sites") +
+  ylab("Proportion het bottom 10% synonymous")
+
+model6 <- lm(Het_Botton_10_nonSyn ~ Het_all, data = Ordered_Heterozygosity)
+r_squared6 <- summary(model6)$r.squared
+p_value6 <- summary(model6)$coefficients[2, 4]  # p-value for the slope
+
+p6 <- ggplot(Ordered_Heterozygosity, aes(x=Het_all, y=Het_Botton_10_nonSyn)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared6, 3), "; p = ", 
+                          ifelse(p_value6 < 0.001, "< 0.001", round(p_value6, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("Proportion het all sites") +
+  ylab("Proportion het bottom 10% non-synonymous")
+
+Heterozygosity <- read.csv(file="All_96_Filter2_Biallelic_het_proportions_5missing_DoS_0.csv")
+Ordered_Heterozygosity <- Heterozygosity
+Ordered_Heterozygosity$Population <- factor(Ordered_Heterozygosity$Population, levels = c("Baffin","Barren-ground","Dolphin Union","Banks","Other Peary"))
+
+model7 <- lm(Het_all_genes_Syn ~ Het_all, data = Ordered_Heterozygosity)
+r_squared7 <- summary(model7)$r.squared
+p_value7 <- summary(model7)$coefficients[2, 4]  # p-value for the slope
+
+p7 <- ggplot(Ordered_Heterozygosity, aes(x=Het_all, y=Het_all_genes_Syn)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared7, 3), "; p = ", 
+                          ifelse(p_value7 < 0.001, "< 0.001", round(p_value7, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("Proportion het all sites") +
+  ylab("Proportion het all synonymous in calculation")
+
+model8 <- lm(Het_all_genes_nonSyn ~ Het_all, data = Ordered_Heterozygosity)
+r_squared8 <- summary(model8)$r.squared
+p_value8 <- summary(model8)$coefficients[2, 4]  # p-value for the slope
+
+p8 <- ggplot(Ordered_Heterozygosity, aes(x=Het_all, y=Het_all_genes_nonSyn)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared8, 3), "; p = ", 
+                          ifelse(p_value8 < 0.001, "< 0.001", round(p_value8, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("Proportion het all sites") +
+  ylab("Proportion het all non-synonymous in calculation")
+
+model9 <- lm(Het_DoS_0_Syn ~ Het_all, data = Ordered_Heterozygosity)
+r_squared9 <- summary(model9)$r.squared
+p_value9 <- summary(model9)$coefficients[2, 4]  # p-value for the slope
+
+p9 <- ggplot(Ordered_Heterozygosity, aes(x=Het_all, y=Het_DoS_0_Syn)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared9, 3), "; p = ", 
+                          ifelse(p_value9 < 0.001, "< 0.001", round(p_value9, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("Proportion het all sites") +
+  ylab("Proportion het synonymous DoS score of 0")
+
+model10 <- lm(Het_DoS_0_nonSyn ~ Het_all, data = Ordered_Heterozygosity)
+r_squared10 <- summary(model10)$r.squared
+p_value10 <- summary(model10)$coefficients[2, 4]  # p-value for the slope
+
+p10 <- ggplot(Ordered_Heterozygosity, aes(x=Het_all, y=Het_DoS_0_nonSyn)) + geom_point(aes(color = Population), size=2) +
+  scale_color_manual(values=c("#1F78B4", "#B2DF8A", "#33A02C", "#E31A1C", "#FDBF6F"))+
+  geom_smooth(method=lm, color="darkgrey") +
+  # Add R² and p-value annotation in top left corner
+  annotate("text", 
+           x = -Inf, 
+           y = Inf, 
+           label = paste0("R² = ", round(r_squared10, 3), "; p = ", 
+                          ifelse(p_value10 < 0.001, "< 0.001", round(p_value10, 3))),
+           hjust = -0.1, 
+           vjust = 1.5, 
+           size = 6) +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),panel.background = element_rect(fill = "white",colour = "black",size = 0.5, linetype = "solid"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())+
+  xlab("Proportion het all sites") +
+  ylab("Proportion het non-synonymous DoS score of 0")
+
+Het_scatters3 <- ((p3|p5|p7|p9)/(p4|p6|p8|p10))+
+  plot_annotation(tag_levels = 'A') #add figure labels
+
+#Save as PDF
+pdf("Figure4_Locally_adapted_Proportion_het_scatter_plots_5missing_Rsq.pdf", height=10, width=22)
+Het_scatters3
+dev.off()
+
