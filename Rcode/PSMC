@@ -1,0 +1,49 @@
+##plot multiple individuals with some dashed lines
+read.table(file="21332_q30_15X_default_plot.0.txt",header=FALSE)->ten
+read.table(file="21332_q30_15X_mod2_2_plot.0.txt",header=FALSE)->eleven
+read.table(file="21332_q30_15X_mod_1s_plot.0.txt",header=FALSE)->twelve
+read.table(file="21332_q30_15X_mod_Beta_plot.0.txt",header=FALSE)->thirteen
+
+pdf("PSMC_21332_parameters.pdf", height=50, width=100)
+par(mar=c(25.1,30.1,12.1,29.1),mgp = c(18, 10, 0))
+xend<-7
+plot(log10(ten$V1),ten$V2,type="l",col="#990F0F",pch=14,xlim=c(3.8,xend),ylim=c(0,70),xaxt="n",yaxt="n", main="21332 Demographic History Test Runs", xlab="Time (Kya)",ylab=substitute(paste("Effective population size (x 1000) ",sep="")),cex.axis=6,lwd=15,cex.lab=6,cex.main=8,tck=-0.02,bty="n")
+lines(log10(ten$V1),ten$V2,type="l",col="#990F0F",pch=14,lwd=15,lty=1)
+lines(log10(eleven$V1),eleven$V2,type="l",col="#CC8E51",pch=14,lwd=15,lty=1)
+lines(log10(twelve$V1),twelve$V2,type="l",col="#A3CC51",pch=14,lwd=15,lty=1)
+lines(log10(thirteen$V1),thirteen$V2,type="l",col="#51A3CC",pch=14,lwd=15,lty=1)
+
+axis(2,at=c(0,10,20,30,40,50,60,70),labels=c(0,100,200,300,400,500,600,700),cex.axis=6,lwd=1,tck=-0.02)
+axis(1,at=log10(c(5000,10000,20000,30000,40000,50000,60000,70000,80000,90000,100000,120000,150000,200000,300000,400000,500000,1000000,5000000)),labels=c(5,10,20,30,40,50,60,70,80,90,100,120,150,200,300,400,500,1000,5000),cex.axis=6,tck=-0.02,lwd=10)
+
+legend("topright",inset=c(0.17,0.05), legend=c("Default", "Mod2_2", "Mod_1s", "Beta"),col=c("#990F0F", "#CC8E51","#A3CC51","#51A3CC"),lwd=c(15),lty=c(1,1,1,1),cex=7,box.lty=0)
+dev.off()
+
+
+#Beta PSMC
+read.table(file="21332_q30_15X_mod_Beta_plot.0.txt",header=FALSE)->ten
+read.table(file="21350_q30_15X_mod_Beta_plot.0.txt",header=FALSE)->eleven
+read.table(file="21360_q30_15X_mod_Beta_plot.0.txt",header=FALSE)->twelve
+read.table(file="27177_q30_15X_mod_Beta_plot.0.txt",header=FALSE)->thirteen
+read.table(file="27186_q30_15X_mod_Beta_plot.0.txt",header=FALSE)->fourteen
+read.table(file="56185_q30_15X_mod_Beta_plot.0.txt",header=FALSE)->fifteen
+read.table(file="57241_q30_15X_mod_Beta_plot.0.txt",header=FALSE)->sixteen
+
+pdf("PSMC_BRG_Beta_7inds.pdf", height=50, width=100)
+par(mar=c(25.1,30.1,12.1,29.1),mgp = c(18, 10, 0))
+xend<-7
+plot(log10(ten$V1),ten$V2,type="l",col="#CC5151",pch=14,xlim=c(3.8,6),ylim=c(0,70),xaxt="n",yaxt="n", main="Barren-ground Demographic History", xlab="Time (Kya)",ylab=substitute(paste("Effective population size (x 1000) ",sep="")),cex.axis=6,lwd=15,cex.lab=6,cex.main=8,tck=-0.02,bty="n")
+lines(log10(ten$V1),ten$V2,type="l",col="#CC5151",pch=14,lwd=15,lty=1)
+lines(log10(eleven$V1),eleven$V2,type="l",col="#CC8E51",pch=14,lwd=15,lty=1)
+lines(log10(twelve$V1),twelve$V2,type="l",col="#A3CC51",pch=14,lwd=15,lty=1)
+lines(log10(thirteen$V1),thirteen$V2,type="l",col="#51A3CC",pch=14,lwd=15,lty=1)
+lines(log10(fourteen$V1),fourteen$V2,type="l",col="#6551CC",pch=14,lwd=15,lty=1)
+lines(log10(fifteen$V1),fifteen$V2,type="l",col="#990F0F",pch=14,lwd=15,lty=2)
+lines(log10(sixteen$V1),sixteen$V2,type="l",col="#99540F",pch=14,lwd=15,lty=2)
+
+axis(2,at=c(0,10,20,30,40,50,60,70),labels=c(0,100,200,300,400,500,600,700),cex.axis=6,lwd=1,tck=-0.02)
+axis(1,at=log10(c(5000,10000,20000,30000,40000,50000,60000,70000,80000,90000,100000,120000,150000)),labels=c(5,10,20,30,40,50,60,70,80,90,100,120,150),cex.axis=6,tck=-0.02,lwd=10)
+
+legend("topright",inset=c(0.17,0.05), legend=c("21332", "21350", "21360", "27177", "27186", "56185", "57241"),col=c("#CC5151", "#CC8E51","#A3CC51","#51A3CC","#6551CC","#990F0F","#99540F"),lwd=c(15),lty=c(1,1,1,1,1,2,2),cex=7,box.lty=0)
+
+dev.off()
