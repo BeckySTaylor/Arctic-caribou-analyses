@@ -1,0 +1,168 @@
+library(ggplot2)
+library(patchwork)
+
+##K2
+
+ADMIXTURE_ARC <- read.csv(file="Arctic_82_K2.csv")
+ADMIXTURE_ARC$PCID <- as.factor(ADMIXTURE_ARC$PCID)
+
+Ordered_ARC <- ADMIXTURE_ARC
+Ordered_ARC$PCID <- factor(Ordered_ARC$PCID, levels = c("23507","23508","34551","34553","56175","56176","56177","56178","56179","56180","56181","56182","56183","56184","57232","57233","58734","58740","57240","57241","57242","57243","56185","56186","27177","27186","57238","57239","57234","57235","21331","21332","21334","21337","21339","21340","21343","21347","21348","21350","21351","21357","21360","21367","21371","57236","57237","32527","32529","58712","58713","58715","58719","58721","58722","58723","58725","58726","58727","34616","34629","34504","34506","34566","34569","34571","34573","34584","34585","34586","34588","34549","34550","34554","34555","17510","56190","58747","56188","34579","23552","34519"))
+
+# Create position variable for x-axis
+Ordered_ARC$Position <- as.numeric(Ordered_ARC$PCID)
+
+# Calculate group label positions (center of each group)
+group_positions <- Ordered_ARC %>%
+  group_by(Group) %>%
+  summarise(
+    center_pos = mean(Position),
+    .groups = 'drop'
+  )
+
+# Calculate group boundaries for vertical lines
+group_boundaries <- Ordered_ARC %>%
+  group_by(Group) %>%
+  summarise(
+    min_pos = min(Position),
+    max_pos = max(Position),
+    .groups = 'drop'
+  ) %>%
+  mutate(boundary = max_pos + 0.5) %>%
+  filter(boundary < max(Ordered_ARC$Position))
+
+
+p1 <- ggplot(Ordered_ARC, aes(x = Position, y = Ancestry, fill = K)) + 
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_vline(data = group_boundaries, aes(xintercept = boundary), 
+             color = "black", linetype = "dashed", alpha = 0.7, size =0.35) +
+  scale_fill_manual(values = c("#1F78B4", "#B2DF8A")) +
+  scale_x_continuous(
+    breaks = group_positions$center_pos,
+    labels = group_positions$Group,
+    expand = c(0.01, 0.01)
+  ) +
+  theme(
+    axis.title.x = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1, size = 6, vjust = 1),
+    panel.background = element_rect(fill = "white", colour = "black", size = 0.5, linetype = "solid"),
+    legend.position = "none",
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    plot.margin = margin(10, 10, 40, 10)
+  ) +
+  xlab("Population") +
+  ylab("Ancestry Proportion")
+
+
+
+#Arctic K3
+ADMIXTURE_ARC <- read.csv(file="Arctic_82_K3.csv")
+ADMIXTURE_ARC$PCID <- as.factor(ADMIXTURE_ARC$PCID)
+
+Ordered_ARC <- ADMIXTURE_ARC
+Ordered_ARC$PCID <- factor(Ordered_ARC$PCID, levels = c("23507","23508","34551","34553","56175","56176","56177","56178","56179","56180","56181","56182","56183","56184","57232","57233","58734","58740","57240","57241","57242","57243","56185","56186","27177","27186","57238","57239","57234","57235","21331","21332","21334","21337","21339","21340","21343","21347","21348","21350","21351","21357","21360","21367","21371","57236","57237","32527","32529","58712","58713","58715","58719","58721","58722","58723","58725","58726","58727","34616","34629","34504","34506","34566","34569","34571","34573","34584","34585","34586","34588","34549","34550","34554","34555","17510","56190","58747","56188","34579","23552","34519"))
+
+# Create position variable for x-axis
+Ordered_ARC$Position <- as.numeric(Ordered_ARC$PCID)
+
+# Calculate group label positions (center of each group)
+group_positions <- Ordered_ARC %>%
+  group_by(Group) %>%
+  summarise(
+    center_pos = mean(Position),
+    .groups = 'drop'
+  )
+
+# Calculate group boundaries for vertical lines
+group_boundaries <- Ordered_ARC %>%
+  group_by(Group) %>%
+  summarise(
+    min_pos = min(Position),
+    max_pos = max(Position),
+    .groups = 'drop'
+  ) %>%
+  mutate(boundary = max_pos + 0.5) %>%
+  filter(boundary < max(Ordered_ARC$Position))
+
+
+p2 <- ggplot(Ordered_ARC, aes(x = Position, y = Ancestry, fill = K)) + 
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_vline(data = group_boundaries, aes(xintercept = boundary), 
+             color = "black", linetype = "dashed", alpha = 0.7, size =0.35) +
+  scale_fill_manual(values = c("#B2DF8A","#FDBF6F","#1F78B4")) +
+  scale_x_continuous(
+    breaks = group_positions$center_pos,
+    labels = group_positions$Group,
+    expand = c(0.01, 0.01)
+  ) +
+  theme(
+    axis.title.x = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1, size = 6, vjust = 1),
+    panel.background = element_rect(fill = "white", colour = "black", size = 0.5, linetype = "solid"),
+    legend.position = "none",
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    plot.margin = margin(10, 10, 40, 10)
+  ) +
+  xlab("Population") +
+  ylab("Ancestry Proportion")
+
+
+
+#Arctic K4
+ADMIXTURE_ARC <- read.csv(file="Arctic_82_K4.csv")
+ADMIXTURE_ARC$PCID <- as.factor(ADMIXTURE_ARC$PCID)
+
+Ordered_ARC <- ADMIXTURE_ARC
+Ordered_ARC$PCID <- factor(Ordered_ARC$PCID, levels = c("23507","23508","34551","34553","56175","56176","56177","56178","56179","56180","56181","56182","56183","56184","57232","57233","58734","58740","57240","57241","57242","57243","56185","56186","27177","27186","57238","57239","57234","57235","21331","21332","21334","21337","21339","21340","21343","21347","21348","21350","21351","21357","21360","21367","21371","57236","57237","32527","32529","58712","58713","58715","58719","58721","58722","58723","58725","58726","58727","34616","34629","34504","34506","34566","34569","34571","34573","34584","34585","34586","34588","34549","34550","34554","34555","17510","56190","58747","56188","34579","23552","34519"))
+
+# Create position variable for x-axis
+Ordered_ARC$Position <- as.numeric(Ordered_ARC$PCID)
+
+# Calculate group label positions (center of each group)
+group_positions <- Ordered_ARC %>%
+  group_by(Group) %>%
+  summarise(
+    center_pos = mean(Position),
+    .groups = 'drop'
+  )
+
+# Calculate group boundaries for vertical lines
+group_boundaries <- Ordered_ARC %>%
+  group_by(Group) %>%
+  summarise(
+    min_pos = min(Position),
+    max_pos = max(Position),
+    .groups = 'drop'
+  ) %>%
+  mutate(boundary = max_pos + 0.5) %>%
+  filter(boundary < max(Ordered_ARC$Position))
+
+
+p3 <- ggplot(Ordered_ARC, aes(x = Position, y = Ancestry, fill = K)) + 
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_vline(data = group_boundaries, aes(xintercept = boundary), 
+             color = "black", linetype = "dashed", alpha = 0.7, size =0.35) +
+  scale_fill_manual(values = c("#1F78B4","#33A02C","#FDBF6F","#B2DF8A")) +
+  scale_x_continuous(
+    breaks = group_positions$center_pos,
+    labels = group_positions$Group,
+    expand = c(0.01, 0.01)
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 6, vjust = 1),
+    panel.background = element_rect(fill = "white", colour = "black", size = 0.5, linetype = "solid"),
+    legend.position = "none",
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    plot.margin = margin(10, 10, 40, 10)
+  ) +
+  xlab("Population") +
+  ylab("Ancestry Proportion")
+
+ADMIXTURE_fig <- ((p1/p2/p3))+
+  plot_annotation(tag_levels = 'A') #add figure labels
+
+#Save as PDF
+pdf("Figure_S1_ADMIXTURE.pdf", height=10, width=10)
+ADMIXTURE_fig
+dev.off()
