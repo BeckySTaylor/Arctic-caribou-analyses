@@ -1,0 +1,11 @@
+#Statistically test whether as FROH increases, the enrichment of genes in ROH increases (or does a deviation from a 1:1 relationship grow as FROH increases) using mixed models accounting for population structure as a random effect
+
+Proprtion_ROH <- read.csv(file="ROH_Overlaps_5missing_SnpEff.csv")
+
+Ordered_Proprtion_ROH <- Proprtion_ROH
+Ordered_Proprtion_ROH$Population <- factor(Ordered_Proprtion_ROH$Population, levels = c("Baffin","Barren-ground","Dolphin Union","Banks","Other Peary"))
+
+library(lme4)
+Ordered_Proprtion_ROH$deviation <- Ordered_Proprtion_ROH$Proportion_total_low - Ordered_Proprtion_ROH$FROH
+model <- lmer(deviation ~ 1 + (1 | Population), data = Ordered_Proprtion_ROH)
+summary(model)
