@@ -1,0 +1,60 @@
+##Gene density boxplots and Wilcoxon test
+
+library(tidyverse)
+library(ggpubr)
+library(patchwork)
+
+#Read wide-format data
+sample_data <- read_csv("Gene_density_Low_100Kb.csv")
+
+#Reshape to long format, preserving pairing by PCID
+long_data <- sample_data %>%
+  arrange(Population, PCID) %>%
+  pivot_longer(
+    cols = c(Density_In, Density_Out),
+    names_to = "Category",
+    values_to = "Gene_Density"
+  ) %>%
+  mutate(Category = recode(Category, "Density_In" = "In ROH", "Density_Out" = "Outside ROH"))
+
+#Run paired Wilcoxon test per population
+populations <- unique(sample_data$Population)
+
+wilcox_results <- map_dfr(populations, function(pop) {
+  sub <- subset(sample_data, Population == pop)
+  test <- wilcox.test(sub$Density_In, sub$Density_Out,
+                      paired = TRUE, alternative = "two.sided")
+  tibble(Population = pop, p_value = test$p.value)
+})
+
+print(wilcox_results)
+
+#Build label positions: place each p-value just above that
+label_data <- long_data %>%
+  group_by(Population) %>%
+  summarise(y_pos = max(Gene_Density, na.rm = TRUE) * 1.08) %>%
+  left_join(wilcox_results, by = "Population") %>%
+  mutate(label = paste0("p = ", formatC(p_value, format = "f", digits = 3)))
+
+#Box plot, annotated with the manually computed p-values
+p1 <- ggplot(long_data, aes(x = Population, y = Gene_Density, fill = Category)) +
+  geom_boxplot(position = position_dodge(0.8), width = 0.7) +
+  scale_fill_manual(values = c("In ROH" = "#D43F3A", "Outside ROH" = "#EEA236")) +
+  theme_classic() +
+  labs(
+    x = "Population",
+    y = "Gene Density",
+    fill = "Category"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.position = "top"
+  ) +
+  geom_text(
+    data = label_data,
+    aes(x = Population, y = y_pos, label = label),
+    inherit.aes = FALSE,
+    size = 3.5
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.15)))
+
