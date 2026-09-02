@@ -2,6 +2,28 @@
 
 java -Xmx4g -jar snpEff.jar reindeer_masked ./Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing.recode.vcf.gz > ./Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_annotated.vcf
 
+###For the SnpEff category calculations
+##Create a VCF file for each impact category of interest, here for high impact:
+cat ../Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_annotated_biallelic.recode.vcf | \
+java -Xmx4g -jar ../SnpSift.jar filter "( EFF[*].IMPACT = 'HIGH' )" | \
+grep -v "WARNING" > Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_High.vcf
+
+##Pull out variants alternate alleles in the different impact categories for each population. Here as an example for alternate allales labelled as high impact sites for the Banks Island caribou:
+cat ./Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_High.vcf | \
+java -Xmx4g -jar ../SnpSift.jar filter "(ANN[*].IMPACT = 'HIGH') & (isVariant(GEN[33]) | isVariant(GEN[34]) | isVariant(GEN[42]) | isVariant(GEN[43]) | isVariant(GEN[44]) | isVariant(GEN[45]) | isVariant(GEN[47]) | isVariant(GEN[48]) | isVariant(GEN[49]) | isVariant(GEN[50]))" > Banks_5missing_High.vcf
+
+#Extract gene information. here agin for Banks Island high impact variants:
+java -Xmx4g -jar ../SnpSift.jar extractFields Banks_5missing_High.vcf CHROM POS REF ALT "ANN[*].GENE" > Names_Banks_High.txt
+
+##Created a single list for all genes names contained in the file, and then removed duplicate genes so each gene is only represented once in the list:
+awk '!seen[$0]++' Banks_High_all.txt > Banks_High_all_singles.txt
+
+#Pull out the locations of the genes from the annotation and then make a bed file which can be used to find ROH overlaps:
+for FILE in *.txt; do grep -w -f $FILE reindeer.gff > $FILE.gff; done
+for FILE in *.txt.gff; do grep -E $'\tmRNA\t' $FILE > ${FILE}_genes.gff; done
+for FILE in *_genes.gff; do cut -f 1,4,5 $FILE > ${FILE}_coordinates.bed; done
+
+###For the DoS calculations
 ##Pull out only synonymous sites using SNPsift
 
 cat Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_annotated.vcf | \
@@ -18,3 +40,6 @@ grep -v "WARNING" > Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing
 
 vcftools --gzvcf Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_Syn.vcf.gz --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_Syn_biallelic
 vcftools --gzvcf Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_nonSyn.vcf.gz --min-alleles 2 --max-alleles 2 --recode --recode-INFO-all --out Apr2025_96indv_Arctic_NM1_NALout_autosomes_Reindeer_5missing_nonSyn_biallelic
+
+
+
